@@ -429,8 +429,9 @@ function initPopSurprises() {
 }
 
 
-/* Candle Blowing & Microphone Sensor Engine */
+/* Candle Blowing & Independent Microphone Sensor Engine */
 let micStream = null;
+let micAudioCtx = null;
 let micAnalyser = null;
 let isMicListening = false;
 let micAnimationFrame = null;
@@ -483,7 +484,6 @@ function initCandles() {
       e.stopPropagation();
       extinguish(f);
       speakHappyBirthdayShruti();
-      if (!isPlayingTune) startTune();
     });
   });
 
@@ -499,7 +499,6 @@ function initCandles() {
       flames.forEach(f => extinguish(f));
       triggerMassivePopperExplosion();
       speakHappyBirthdayShruti();
-      if (!isPlayingTune) startTune();
       showModal('surprise-modal', '🎉', 'Candles Blown Out! 🎂🎉', 'Happy Birthday Shruti! Make a wish! May every dream come true this year! 🌟✨');
     });
   }
@@ -509,7 +508,6 @@ function initCandles() {
       playChimeSFX();
       triggerMassivePopperExplosion();
       speakHappyBirthdayShruti();
-      if (!isPlayingTune) startTune();
       showModal('surprise-modal', '🍰', 'Virtual Cake Cut! 🎉', 'First slice goes to Shruti! Have the happiest day ever! 🎂💖');
     });
   }
@@ -530,16 +528,14 @@ function toggleMicBlowingSensor(flames, statusBadge, btn) {
     micStream = stream;
     isMicListening = true;
 
-    if (!audioCtx) {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (AudioContextClass) audioCtx = new AudioContextClass();
-    }
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume();
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    micAudioCtx = new AudioContextClass();
+    if (micAudioCtx.state === 'suspended') {
+      micAudioCtx.resume();
     }
 
-    const source = audioCtx.createMediaStreamSource(stream);
-    micAnalyser = audioCtx.createAnalyser();
+    const source = micAudioCtx.createMediaStreamSource(stream);
+    micAnalyser = micAudioCtx.createAnalyser();
     micAnalyser.fftSize = 256;
     source.connect(micAnalyser);
 
@@ -572,12 +568,8 @@ function toggleMicBlowingSensor(flames, statusBadge, btn) {
         // MASSIVE SCREEN-WIDE PARTY POPPER BURST!
         triggerMassivePopperExplosion();
 
-        // Speak "Happy Birthday Shruti!" out loud & start tune!
+        // Speak "Happy Birthday Shruti!" out loud
         speakHappyBirthdayShruti();
-
-        if (!isPlayingTune) {
-          startTune();
-        }
 
         stopMicListening(statusBadge, btn);
 
@@ -611,6 +603,10 @@ function stopMicListening(statusBadge, btn) {
   if (micStream) {
     micStream.getTracks().forEach(track => track.stop());
     micStream = null;
+  }
+  if (micAudioCtx) {
+    try { micAudioCtx.close(); } catch (e) {}
+    micAudioCtx = null;
   }
   if (statusBadge) {
     statusBadge.classList.remove('active');
