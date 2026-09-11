@@ -224,8 +224,8 @@ function initAutoPlayMusic() {
     tryStartMusic();
   } catch (e) {}
 
-  // Multi-event unlock listener for strict mobile & desktop autoplay policies
-  const interactionEvents = ['click', 'touchstart', 'touchend', 'scroll', 'pointerdown', 'mousedown', 'keydown'];
+  // Multi-event unlock listener for mobile & desktop browsers
+  const interactionEvents = ['click', 'touchstart', 'touchend', 'scroll', 'pointerdown', 'mousedown', 'mousemove', 'keydown'];
   const unlockAndPlay = () => {
     tryStartMusic();
     interactionEvents.forEach(evt => document.removeEventListener(evt, unlockAndPlay));
