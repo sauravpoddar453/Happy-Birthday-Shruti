@@ -407,6 +407,18 @@ let micAnalyser = null;
 let isMicListening = false;
 let micAnimationFrame = null;
 
+function speakHappyBirthdayShruti() {
+  if ('speechSynthesis' in window) {
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance("Happy Birthday Shruti!");
+      utterance.rate = 0.95;
+      utterance.pitch = 1.2;
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {}
+  }
+}
+
 function initCandles() {
   const flames = document.querySelectorAll('.flame-element');
   const blowBtn = document.getElementById('blow-candles-btn');
@@ -418,6 +430,7 @@ function initCandles() {
     f.addEventListener('click', (e) => {
       e.stopPropagation();
       extinguish(f);
+      speakHappyBirthdayShruti();
       if (!isPlayingTune) startTune();
     });
   });
@@ -432,16 +445,18 @@ function initCandles() {
     blowBtn.addEventListener('click', (e) => {
       playBlowSFX();
       flames.forEach(f => extinguish(f));
+      speakHappyBirthdayShruti();
       if (!isPlayingTune) startTune();
       const coords = getEventCoordinates(e, blowBtn);
       triggerConfettiBurst(coords.x, coords.y, 100);
-      showModal('surprise-modal', '🕯️', 'Candles Blown Out! 🎂🎉', 'Make a wish, Shruti! May every dream come true this year! 🎵 Enjoy your birthday song! 🌟✨');
+      showModal('surprise-modal', '🕯️', 'Candles Blown Out! 🎂🎉', 'Happy Birthday Shruti! Make a wish! May every dream come true this year! 🌟✨');
     });
   }
 
   if (cutBtn) {
     cutBtn.addEventListener('click', (e) => {
       playChimeSFX();
+      speakHappyBirthdayShruti();
       if (!isPlayingTune) startTune();
       const coords = getEventCoordinates(e, cutBtn);
       triggerConfettiBurst(coords.x, coords.y, 130);
@@ -509,7 +524,9 @@ function toggleMicBlowingSensor(flames, statusBadge, btn) {
         triggerConfettiBurst(coords.x, coords.y, 140);
         spawnFloatingHearts(coords.x, coords.y);
 
-        // Start playing the Happy Birthday Shruti song!
+        // Speak "Happy Birthday Shruti!" out loud & play song!
+        speakHappyBirthdayShruti();
+
         if (!isPlayingTune) {
           startTune();
         }
@@ -518,11 +535,11 @@ function toggleMicBlowingSensor(flames, statusBadge, btn) {
 
         if (statusBadge) {
           statusBadge.classList.add('active');
-          statusBadge.textContent = '💨 WISH GRANTED! Shruti blew out all candles! 🎵 Playing Birthday Song!';
+          statusBadge.textContent = '💨 WISH GRANTED! Shruti blew out all candles! 🗣️ Happy Birthday Shruti!';
         }
 
         setTimeout(() => {
-          showModal('surprise-modal', '🎂', 'Happy Birthday Shruti! 🎂🎉', 'Awesome! Shruti blew into the microphone and extinguished all the candles! Enjoy your birthday song! 🌟✨');
+          showModal('surprise-modal', '🎂', 'Happy Birthday Shruti! 🎂🎉', 'Awesome! Shruti blew into the microphone and extinguished all the candles! Enjoy your birthday wish and song! 🌟✨');
         }, 300);
 
         return;
