@@ -170,14 +170,6 @@ let isPlayingTune = false;
 let tuneTimeout = null;
 
 function initAutoPlayMusic() {
-  const musicBtn = document.getElementById('music-toggle-btn');
-  if (musicBtn) {
-    musicBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleMusic();
-    });
-  }
-
   const triggerAutoPlay = () => {
     if (!audioCtx) {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -197,33 +189,6 @@ function initAutoPlayMusic() {
   document.addEventListener('click', triggerAutoPlay, { once: true });
   document.addEventListener('touchstart', triggerAutoPlay, { once: true });
   document.addEventListener('scroll', triggerAutoPlay, { once: true });
-}
-
-function toggleMusic() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-
-  if (isPlayingTune) {
-    stopTune();
-  } else {
-    startTune();
-  }
-}
-
-function updateMusicButtonUI() {
-  const btn = document.getElementById('music-toggle-btn');
-  if (!btn) return;
-  if (isPlayingTune) {
-    btn.textContent = '🔊 Mute Music';
-    btn.classList.add('playing');
-  } else {
-    btn.textContent = '🎵 Play Music';
-    btn.classList.remove('playing');
-  }
 }
 
 function playPopSFX() {
@@ -321,7 +286,6 @@ function startTune() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === 'suspended') audioCtx.resume();
   isPlayingTune = true;
-  updateMusicButtonUI();
 
   let idx = 0;
   function step() {
@@ -350,7 +314,6 @@ function startTune() {
 function stopTune() {
   isPlayingTune = false;
   if (tuneTimeout) clearTimeout(tuneTimeout);
-  updateMusicButtonUI();
 }
 
 
