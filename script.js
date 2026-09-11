@@ -170,25 +170,35 @@ let isPlayingTune = false;
 let tuneTimeout = null;
 
 function initAutoPlayMusic() {
-  const triggerAutoPlay = () => {
+  const tryStartMusic = () => {
     if (!audioCtx) {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
     if (audioCtx.state === 'suspended') {
       audioCtx.resume();
     }
-
     if (!isPlayingTune) {
       startTune();
     }
-    document.removeEventListener('click', triggerAutoPlay);
-    document.removeEventListener('touchstart', triggerAutoPlay);
-    document.removeEventListener('scroll', triggerAutoPlay);
   };
 
-  document.addEventListener('click', triggerAutoPlay, { once: true });
-  document.addEventListener('touchstart', triggerAutoPlay, { once: true });
-  document.addEventListener('scroll', triggerAutoPlay, { once: true });
+  // Attempt immediate playback on page load
+  try {
+    tryStartMusic();
+  } catch (e) {
+    // Suppress initial context warning if browser policy requires user gesture
+  }
+
+  // Fallback unlock listener for mobile & desktop browsers requiring gesture
+  const interactionEvents = ['click', 'touchstart', 'touchend', 'scroll', 'pointerdown', 'keydown'];
+  const unlockAndPlay = () => {
+    tryStartMusic();
+    interactionEvents.forEach(evt => document.removeEventListener(evt, unlockAndPlay));
+  };
+
+  interactionEvents.forEach(evt => {
+    document.addEventListener(evt, unlockAndPlay, { once: true, passive: true });
+  });
 }
 
 function playPopSFX() {
