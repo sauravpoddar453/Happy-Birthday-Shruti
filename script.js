@@ -172,25 +172,32 @@ let tuneTimeout = null;
 function initAutoPlayMusic() {
   const tryStartMusic = () => {
     if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) {
+        audioCtx = new AudioContextClass();
+      }
     }
-    if (audioCtx.state === 'suspended') {
+    if (audioCtx && audioCtx.state === 'suspended') {
       audioCtx.resume();
     }
-    if (!isPlayingTune) {
+    if (!isPlayingTune && audioCtx) {
       startTune();
+    }
+
+    // Try HTML5 Audio element as well if present
+    const bgAudio = document.getElementById('bg-audio');
+    if (bgAudio && bgAudio.paused && bgAudio.src) {
+      bgAudio.play().catch(() => {});
     }
   };
 
-  // Attempt immediate playback on page load
+  // Attempt initial playback on load
   try {
     tryStartMusic();
-  } catch (e) {
-    // Suppress initial context warning if browser policy requires user gesture
-  }
+  } catch (e) {}
 
-  // Fallback unlock listener for mobile & desktop browsers requiring gesture
-  const interactionEvents = ['click', 'touchstart', 'touchend', 'scroll', 'pointerdown', 'keydown'];
+  // Multi-event unlock listener for strict mobile & desktop autoplay policies
+  const interactionEvents = ['click', 'touchstart', 'touchend', 'scroll', 'pointerdown', 'mousedown', 'keydown'];
   const unlockAndPlay = () => {
     tryStartMusic();
     interactionEvents.forEach(evt => document.removeEventListener(evt, unlockAndPlay));
@@ -202,8 +209,12 @@ function initAutoPlayMusic() {
 }
 
 function playPopSFX() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) audioCtx = new AudioContextClass();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  if (!audioCtx) return;
 
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
@@ -211,7 +222,7 @@ function playPopSFX() {
   osc.frequency.setValueAtTime(320, audioCtx.currentTime);
   osc.frequency.exponentialRampToValueAtTime(750, audioCtx.currentTime + 0.08);
 
-  gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
 
   osc.connect(gain);
@@ -221,8 +232,12 @@ function playPopSFX() {
 }
 
 function playBlowSFX() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) audioCtx = new AudioContextClass();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  if (!audioCtx) return;
 
   const bufferSize = audioCtx.sampleRate * 0.35;
   const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -234,7 +249,7 @@ function playBlowSFX() {
   const noise = audioCtx.createBufferSource();
   noise.buffer = buffer;
   const gain = audioCtx.createGain();
-  gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
 
   noise.connect(gain);
@@ -243,8 +258,12 @@ function playBlowSFX() {
 }
 
 function playChimeSFX() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) audioCtx = new AudioContextClass();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  if (!audioCtx) return;
 
   [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
     const osc = audioCtx.createOscillator();
@@ -252,7 +271,7 @@ function playChimeSFX() {
 
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
-    gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.08);
+    gain.gain.setValueAtTime(0.3, audioCtx.currentTime + idx * 0.08);
     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.08 + 0.3);
 
     osc.connect(gain);
@@ -293,27 +312,43 @@ const baarBaarNotes = [
 ];
 
 function startTune() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) audioCtx = new AudioContextClass();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  if (!audioCtx) return;
+
   isPlayingTune = true;
 
   let idx = 0;
   function step() {
-    if (!isPlayingTune) return;
+    if (!isPlayingTune || !audioCtx) return;
     const item = baarBaarNotes[idx];
-    const osc = audioCtx.createOscillator();
+
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
 
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(item.note, audioCtx.currentTime);
-    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    osc1.type = 'triangle';
+    osc1.frequency.setValueAtTime(item.note, audioCtx.currentTime);
+
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(item.note * 0.5, audioCtx.currentTime); // Rich sub-harmonic
+
+    gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + item.duration * 0.92);
 
-    osc.connect(gain);
+    osc1.connect(gain);
+    osc2.connect(gain);
     gain.connect(audioCtx.destination);
 
-    osc.start();
-    osc.stop(audioCtx.currentTime + item.duration * 0.92);
+    osc1.start(audioCtx.currentTime);
+    osc2.start(audioCtx.currentTime);
+    osc1.stop(audioCtx.currentTime + item.duration * 0.92);
+    osc2.stop(audioCtx.currentTime + item.duration * 0.92);
 
     idx = (idx + 1) % baarBaarNotes.length;
     tuneTimeout = setTimeout(step, item.duration * 1000);
