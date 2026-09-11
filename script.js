@@ -12,6 +12,29 @@ document.addEventListener('DOMContentLoaded', () => {
   initAutoPlayMusic();
 });
 
+/* Touch & Mouse Event Coordinate Helper */
+function getEventCoordinates(e, targetElement) {
+  let x, y;
+  if (e.touches && e.touches.length > 0) {
+    x = e.touches[0].clientX;
+    y = e.touches[0].clientY;
+  } else if (e.changedTouches && e.changedTouches.length > 0) {
+    x = e.changedTouches[0].clientX;
+    y = e.changedTouches[0].clientY;
+  } else if (e.clientX !== undefined && e.clientY !== undefined && e.clientX > 0) {
+    x = e.clientX;
+    y = e.clientY;
+  } else if (targetElement) {
+    const rect = targetElement.getBoundingClientRect();
+    x = rect.left + rect.width / 2;
+    y = rect.top + rect.height / 2;
+  } else {
+    x = window.innerWidth / 2;
+    y = window.innerHeight / 2;
+  }
+  return { x, y };
+}
+
 /* Particle Canvas Engine */
 let canvas, ctx, particles = [];
 
@@ -21,14 +44,19 @@ function initParticles() {
   ctx = canvas.getContext('2d');
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('orientationchange', () => {
+    setTimeout(resizeCanvas, 150);
+  });
 
-  for (let i = 0; i < 45; i++) {
+  const count = window.innerWidth < 600 ? 30 : 45;
+  for (let i = 0; i < count; i++) {
     particles.push(createParticle());
   }
   animateParticles();
 }
 
 function resizeCanvas() {
+  if (!canvas) return;
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
@@ -96,25 +124,28 @@ function animateParticles() {
 /* 3D TILT EFFECT & FLOATING HEART EXPLOSION ON PHOTO CLICK */
 function initPolaroid3DTilt() {
   const polaroids = document.querySelectorAll('.polaroid-item');
+  const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
   polaroids.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+    if (!isTouchDevice) {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
 
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
 
-      const rotateX = ((y - centerY) / centerY) * -14;
-      const rotateY = ((x - centerX) / centerX) * 14;
+        const rotateX = ((y - centerY) / centerY) * -12;
+        const rotateY = ((x - centerX) / centerX) * 12;
 
-      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
-    });
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.04, 1.04, 1.04)`;
+      });
 
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-    });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      });
+    }
   });
 }
 
@@ -124,7 +155,7 @@ function spawnFloatingHearts(x, y) {
     const heart = document.createElement('div');
     heart.className = 'floating-heart';
     heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
-    heart.style.left = `${x + (Math.random() - 0.5) * 50}px`;
+    heart.style.left = `${x + (Math.random() - 0.5) * 40}px`;
     heart.style.top = `${y + (Math.random() - 0.5) * 30}px`;
     document.body.appendChild(heart);
 
@@ -139,6 +170,14 @@ let isPlayingTune = false;
 let tuneTimeout = null;
 
 function initAutoPlayMusic() {
+  const musicBtn = document.getElementById('music-toggle-btn');
+  if (musicBtn) {
+    musicBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMusic();
+    });
+  }
+
   const triggerAutoPlay = () => {
     if (!audioCtx) {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -158,6 +197,33 @@ function initAutoPlayMusic() {
   document.addEventListener('click', triggerAutoPlay, { once: true });
   document.addEventListener('touchstart', triggerAutoPlay, { once: true });
   document.addEventListener('scroll', triggerAutoPlay, { once: true });
+}
+
+function toggleMusic() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+
+  if (isPlayingTune) {
+    stopTune();
+  } else {
+    startTune();
+  }
+}
+
+function updateMusicButtonUI() {
+  const btn = document.getElementById('music-toggle-btn');
+  if (!btn) return;
+  if (isPlayingTune) {
+    btn.textContent = '🔊 Mute Music';
+    btn.classList.add('playing');
+  } else {
+    btn.textContent = '🎵 Play Music';
+    btn.classList.remove('playing');
+  }
 }
 
 function playPopSFX() {
@@ -255,6 +321,7 @@ function startTune() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === 'suspended') audioCtx.resume();
   isPlayingTune = true;
+  updateMusicButtonUI();
 
   let idx = 0;
   function step() {
@@ -283,6 +350,7 @@ function startTune() {
 function stopTune() {
   isPlayingTune = false;
   if (tuneTimeout) clearTimeout(tuneTimeout);
+  updateMusicButtonUI();
 }
 
 
@@ -293,9 +361,10 @@ function initPopSurprises() {
     item.addEventListener('click', (e) => {
       if (item.classList.contains('popped')) return;
 
+      const coords = getEventCoordinates(e, item);
       playPopSFX();
-      spawnFloatingHearts(e.clientX, e.clientY);
-      triggerConfettiBurst(e.clientX, e.clientY, 50);
+      spawnFloatingHearts(coords.x, coords.y);
+      triggerConfettiBurst(coords.x, coords.y, 50);
       item.classList.add('popped');
 
       const title = item.getAttribute('data-title');
@@ -331,18 +400,20 @@ function initCandles() {
   });
 
   if (blowBtn) {
-    blowBtn.addEventListener('click', () => {
+    blowBtn.addEventListener('click', (e) => {
       playBlowSFX();
       flames.forEach(f => extinguish(f));
-      triggerConfettiBurst(window.innerWidth / 2, window.innerHeight / 2, 100);
+      const coords = getEventCoordinates(e, blowBtn);
+      triggerConfettiBurst(coords.x, coords.y, 100);
       showModal('surprise-modal', '🕯️', 'Candles Blown Out!', 'Make a wish, Shruti! May every dream come true this year! 🌟✨');
     });
   }
 
   if (cutBtn) {
-    cutBtn.addEventListener('click', () => {
+    cutBtn.addEventListener('click', (e) => {
       playChimeSFX();
-      triggerConfettiBurst(window.innerWidth / 2, window.innerHeight / 2, 130);
+      const coords = getEventCoordinates(e, cutBtn);
+      triggerConfettiBurst(coords.x, coords.y, 130);
       showModal('surprise-modal', '🍰', 'Virtual Cake Cut! 🎉', 'First slice goes to Shruti! Have the happiest day ever! 🎂💖');
     });
   }
@@ -353,7 +424,7 @@ function extinguish(flame) {
   playBlowSFX();
   flame.classList.add('blown-out');
   const rect = flame.getBoundingClientRect();
-  triggerConfettiBurst(rect.left, rect.top, 25);
+  triggerConfettiBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 25);
 }
 
 
@@ -373,8 +444,9 @@ function bindPolaroid(card) {
   card.addEventListener('click', (e) => {
     const img = card.getAttribute('data-img');
     const cap = card.getAttribute('data-caption');
-    spawnFloatingHearts(e.clientX, e.clientY);
-    triggerConfettiBurst(e.clientX, e.clientY, 30);
+    const coords = getEventCoordinates(e, card);
+    spawnFloatingHearts(coords.x, coords.y);
+    triggerConfettiBurst(coords.x, coords.y, 30);
     document.getElementById('photo-modal-img').src = img;
     document.getElementById('photo-modal-caption').textContent = cap;
     showModal('photo-modal');
@@ -396,3 +468,4 @@ function closeModal(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) modal.classList.remove('active');
 }
+

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>Happy Birthday Shruti! 🎂🎓 | Ritu & Shruti's Memory Scrapbook</title>
   <meta name="description" content="A warm, personal college memory scrapbook for Shruti from her degree college friend Ritu featuring real photos at P.C.E. Purnea!">
   
@@ -25,6 +25,11 @@
       <div class="nav-brand">
         ✨ Shruti & Ritu's College Scrapbook 🎓
       </div>
+      <div class="nav-actions">
+        <button id="music-toggle-btn" class="audio-btn" aria-label="Toggle Birthday Music">
+          🎵 Play Music
+        </button>
+      </div>
     </nav>
 
     <!-- Scrapbook Hero Section with Featured Photo Card -->
@@ -32,25 +37,25 @@
       <div class="washi-tape-top-left"></div>
       <div class="washi-tape-top-right"></div>
       
-      <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; align-items: center;">
-        <div>
+      <div class="hero-grid">
+        <div class="hero-text-content">
           <span class="hero-tag">💖 P.C.E. Purnea Friends & Darjeeling Diaries 🏔️</span>
           <h1 class="hero-main-title">Happy Birthday, <span id="hero-name-display">Shruti</span>! 🎂✨</h1>
           <p class="hero-subtitle-text" id="hero-subtitle-display">
             From taking admission together at P.C.E. Purnea & living in the hostel to crazy Darjeeling trip memories — different branches couldn't keep us apart! Here's to my most supportive friend! 💖
           </p>
 
-          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+          <div class="hero-btn-group">
             <a href="#notebook-letter" class="btn-handcrafted" style="text-decoration: none;">💌 Read Ritu's Note</a>
-            <a href="#memory-lane" class="btn-handcrafted-sec" style="text-decoration: none; color: #0f172a; border-color: #cbd5e1;">📸 Our Real Photo Gallery</a>
+            <a href="#memory-lane" class="btn-handcrafted-sec" style="text-decoration: none;">📸 Our Real Photo Gallery</a>
           </div>
         </div>
 
         <!-- Featured Polaroid Preview -->
-        <div style="text-align: center;">
-          <div class="polaroid-item" style="transform: rotate(3deg); display: inline-block; width: 100%; max-width: 290px;">
+        <div class="hero-polaroid-wrapper">
+          <div class="polaroid-item hero-polaroid-item">
             <div class="polaroid-tape"></div>
-            <div class="polaroid-img-box" style="height: 250px;">
+            <div class="polaroid-img-box hero-polaroid-img-box">
               <img src="assets/photo4.jpg" alt="Ritu & Shruti in Sarees at P.C.E. Purnea">
             </div>
             <div class="polaroid-text">Ritu & Shruti 🌸✨</div>
@@ -155,14 +160,14 @@
         </div>
       </div>
 
-      <div>
-        <h2 style="font-family: var(--font-handwriting); font-size: 2.4rem; color: var(--accent-gold); margin-bottom: 10px;">
+      <div class="cake-text-content">
+        <h2 class="cake-title">
           Make a Wish, Shruti! 🕯️✨
         </h2>
-        <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;">
+        <p class="cake-subtitle">
           Click the candles above or tap below to blow out candles with sound FX & celebratory confetti burst!
         </p>
-        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <div class="cake-btn-group">
           <button id="blow-candles-btn" class="btn-handcrafted">🕯️ Blow Out Candles</button>
           <button id="cut-cake-btn" class="btn-handcrafted-sec">🍰 Cut The Cake</button>
         </div>
@@ -286,10 +291,12 @@
 
   <!-- Photo Lightbox Modal -->
   <div class="modal-backdrop" id="photo-modal">
-    <div class="modal-box" style="max-width: 550px;">
-      <button class="modal-close-btn" id="photo-modal-close">&times;</button>
-      <img src="" id="photo-modal-img" style="width: 100%; border-radius: 12px; border: 3px solid #cbd5e1; margin-bottom: 12px;">
-      <h3 style="font-family: var(--font-handwriting); font-size: 2rem; color: #b91c1c;" id="photo-modal-caption">Caption</h3>
+    <div class="modal-box photo-modal-box">
+      <button class="modal-close-btn" id="photo-modal-close" aria-label="Close Modal">&times;</button>
+      <div class="photo-modal-img-container">
+        <img src="" id="photo-modal-img" alt="Zoomed memory photo">
+      </div>
+      <h3 id="photo-modal-caption" class="photo-modal-caption">Caption</h3>
     </div>
   </div>
 
