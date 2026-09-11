@@ -281,34 +281,41 @@ function playChimeSFX() {
   });
 }
 
-/* "BAAR BAAR DIN YE AAYE" CLASSIC HINDI BIRTHDAY SONG FREQUENCY SEQUENCE */
-const baarBaarNotes = [
+/* "HAPPY BIRTHDAY DEAR SHRUTI!" EXCLUSIVE SYNTHESIZED MELODY & SONG SEQUENCE */
+const happyBirthdayShrutiNotes = [
+  // Happy Birthday to you
+  { note: 392.00, duration: 0.35 }, { note: 392.00, duration: 0.35 },
+  { note: 440.00, duration: 0.6 },  { note: 392.00, duration: 0.6 },
+  { note: 523.25, duration: 0.6 },  { note: 493.88, duration: 1.1 },
+
+  // Happy Birthday to you
+  { note: 392.00, duration: 0.35 }, { note: 392.00, duration: 0.35 },
+  { note: 440.00, duration: 0.6 },  { note: 392.00, duration: 0.6 },
+  { note: 587.33, duration: 0.6 },  { note: 523.25, duration: 1.1 },
+
+  // Happy Birthday Dear Shruti!
+  { note: 392.00, duration: 0.35 }, { note: 392.00, duration: 0.35 },
+  { note: 783.99, duration: 0.6 },  { note: 659.25, duration: 0.6 },
+  { note: 523.25, duration: 0.6 },  { note: 493.88, duration: 0.6 },
+  { note: 440.00, duration: 1.1 },
+
+  // Happy Birthday to you!
+  { note: 698.46, duration: 0.35 }, { note: 698.46, duration: 0.35 },
+  { note: 659.25, duration: 0.6 },  { note: 523.25, duration: 0.6 },
+  { note: 587.33, duration: 0.6 },  { note: 523.25, duration: 1.2 },
+
+  // Baar Baar Din Ye Aaye...
+  { note: 392.00, duration: 0.35 }, { note: 392.00, duration: 0.35 },
+  { note: 440.00, duration: 0.35 }, { note: 392.00, duration: 0.35 },
+  { note: 349.23, duration: 0.6 },  { note: 329.63, duration: 0.6 },
   { note: 392.00, duration: 0.35 }, { note: 392.00, duration: 0.35 },
   { note: 440.00, duration: 0.35 }, { note: 392.00, duration: 0.35 },
   { note: 349.23, duration: 0.6 },  { note: 329.63, duration: 0.6 },
 
-  { note: 392.00, duration: 0.35 }, { note: 392.00, duration: 0.35 },
-  { note: 440.00, duration: 0.35 }, { note: 392.00, duration: 0.35 },
-  { note: 349.23, duration: 0.6 },  { note: 329.63, duration: 0.6 },
-
-  { note: 329.63, duration: 0.35 }, { note: 349.23, duration: 0.35 },
-  { note: 392.00, duration: 0.4 },  { note: 440.00, duration: 0.4 },
-  { note: 523.25, duration: 0.4 },  { note: 493.88, duration: 0.4 },
-  { note: 440.00, duration: 0.8 },
-
-  { note: 440.00, duration: 0.35 }, { note: 392.00, duration: 0.35 },
-  { note: 349.23, duration: 0.35 }, { note: 329.63, duration: 0.35 },
-  { note: 293.66, duration: 0.4 },  { note: 349.23, duration: 0.4 },
-  { note: 329.63, duration: 0.8 },
-
-  { note: 261.63, duration: 0.3 }, { note: 261.63, duration: 0.25 },
-  { note: 293.66, duration: 0.5 }, { note: 261.63, duration: 0.5 },
-  { note: 349.23, duration: 0.5 }, { note: 329.63, duration: 0.9 },
-
-  { note: 261.63, duration: 0.3 }, { note: 261.63, duration: 0.25 },
+  // Happy Birthday Shruti!
   { note: 523.25, duration: 0.5 }, { note: 440.00, duration: 0.5 },
   { note: 349.23, duration: 0.5 }, { note: 329.63, duration: 0.5 },
-  { note: 293.66, duration: 1.1 }
+  { note: 293.66, duration: 1.2 }
 ];
 
 function startTune() {
@@ -326,7 +333,7 @@ function startTune() {
   let idx = 0;
   function step() {
     if (!isPlayingTune || !audioCtx) return;
-    const item = baarBaarNotes[idx];
+    const item = happyBirthdayShrutiNotes[idx];
 
     const osc1 = audioCtx.createOscillator();
     const osc2 = audioCtx.createOscillator();
@@ -350,7 +357,7 @@ function startTune() {
     osc1.stop(audioCtx.currentTime + item.duration * 0.92);
     osc2.stop(audioCtx.currentTime + item.duration * 0.92);
 
-    idx = (idx + 1) % baarBaarNotes.length;
+    idx = (idx + 1) % happyBirthdayShrutiNotes.length;
     tuneTimeout = setTimeout(step, item.duration * 1000);
   }
   step();
@@ -405,6 +412,7 @@ function initCandles() {
   const blowBtn = document.getElementById('blow-candles-btn');
   const cutBtn = document.getElementById('cut-cake-btn');
   const micBtn = document.getElementById('mic-blow-btn');
+  const singBtn = document.getElementById('sing-song-btn');
   const micStatus = document.getElementById('mic-status');
 
   flames.forEach(f => {
@@ -413,6 +421,13 @@ function initCandles() {
       extinguish(f);
     });
   });
+
+  if (singBtn) {
+    singBtn.addEventListener('click', (e) => {
+      const coords = getEventCoordinates(e, singBtn);
+      singShrutiBirthdaySong(singBtn, coords);
+    });
+  }
 
   if (micBtn) {
     micBtn.addEventListener('click', () => {
@@ -438,6 +453,34 @@ function initCandles() {
       showModal('surprise-modal', '🍰', 'Virtual Cake Cut! 🎉', 'First slice goes to Shruti! Have the happiest day ever! 🎂💖');
     });
   }
+}
+
+function singShrutiBirthdaySong(btnElement, coords) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const wishText = new SpeechSynthesisUtterance("Happy Birthday Dear Shruti! Wishing you a fabulous year filled with happiness, success, and warm hostel memories!");
+    wishText.rate = 0.92;
+    wishText.pitch = 1.15;
+    window.speechSynthesis.speak(wishText);
+  }
+
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) audioCtx = new AudioContextClass();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  if (!isPlayingTune) {
+    startTune();
+  }
+
+  const posX = coords ? coords.x : window.innerWidth / 2;
+  const posY = coords ? coords.y : window.innerHeight / 2;
+  triggerConfettiBurst(posX, posY, 140);
+  spawnFloatingHearts(posX, posY);
+
+  showModal('surprise-modal', '🎶', "Shruti's Birthday Song! 🎂🎉", "🎵 Happy Birthday to you! Happy Birthday Dear Shruti! May all your dreams come true! — Love from Ritu & all your friends! 💖✨");
 }
 
 function toggleMicBlowingSensor(flames, statusBadge, btn) {
