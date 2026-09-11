@@ -85,6 +85,34 @@ function triggerConfettiBurst(x, y, count = 70) {
   }
 }
 
+function triggerMassivePopperExplosion() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  // Screen-wide multi-point massive confetti burst
+  triggerConfettiBurst(w * 0.15, h * 0.3, 100);
+  triggerConfettiBurst(w * 0.5, h * 0.35, 160);
+  triggerConfettiBurst(w * 0.85, h * 0.3, 100);
+  triggerConfettiBurst(w * 0.3, h * 0.6, 90);
+  triggerConfettiBurst(w * 0.7, h * 0.6, 90);
+
+  // Floating party popper & celebration emojis burst
+  const popperEmojis = ['🎉', '🎊', '🥳', '🎂', '✨', '💖', '👑', '🌟', '💖', '🎉', '🎊', '🎈'];
+  for (let i = 0; i < 28; i++) {
+    setTimeout(() => {
+      const emojiNode = document.createElement('div');
+      emojiNode.className = 'floating-heart';
+      emojiNode.style.fontSize = `${Math.random() * 1.6 + 1.8}rem`;
+      emojiNode.textContent = popperEmojis[Math.floor(Math.random() * popperEmojis.length)];
+      emojiNode.style.left = `${Math.random() * 88 + 6}vw`;
+      emojiNode.style.top = `${Math.random() * 45 + 30}vh`;
+      document.body.appendChild(emojiNode);
+
+      setTimeout(() => emojiNode.remove(), 1600);
+    }, i * 35);
+  }
+}
+
 function animateParticles() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -408,12 +436,36 @@ let isMicListening = false;
 let micAnimationFrame = null;
 
 function speakHappyBirthdayShruti() {
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) audioCtx = new AudioContextClass();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+
+  // Play celebratory chime fanfare sound on Web Audio
+  playChimeSFX();
+
   if ('speechSynthesis' in window) {
     try {
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance("Happy Birthday Shruti!");
-      utterance.rate = 0.95;
-      utterance.pitch = 1.2;
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+
+      const utterance = new SpeechSynthesisUtterance("Happy Birthday Shruti! Wish you a very Happy Birthday Shruti!");
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      utterance.pitch = 1.25;
+      utterance.volume = 1.0;
+
+      const voices = window.speechSynthesis.getVoices();
+      if (voices && voices.length > 0) {
+        const preferredVoice = voices.find(v => v.lang.startsWith('en') || v.lang.startsWith('hi')) || voices[0];
+        utterance.voice = preferredVoice;
+      }
+
       window.speechSynthesis.speak(utterance);
     } catch (e) {}
   }
@@ -445,21 +497,19 @@ function initCandles() {
     blowBtn.addEventListener('click', (e) => {
       playBlowSFX();
       flames.forEach(f => extinguish(f));
+      triggerMassivePopperExplosion();
       speakHappyBirthdayShruti();
       if (!isPlayingTune) startTune();
-      const coords = getEventCoordinates(e, blowBtn);
-      triggerConfettiBurst(coords.x, coords.y, 100);
-      showModal('surprise-modal', '🕯️', 'Candles Blown Out! 🎂🎉', 'Happy Birthday Shruti! Make a wish! May every dream come true this year! 🌟✨');
+      showModal('surprise-modal', '🎉', 'Candles Blown Out! 🎂🎉', 'Happy Birthday Shruti! Make a wish! May every dream come true this year! 🌟✨');
     });
   }
 
   if (cutBtn) {
     cutBtn.addEventListener('click', (e) => {
       playChimeSFX();
+      triggerMassivePopperExplosion();
       speakHappyBirthdayShruti();
       if (!isPlayingTune) startTune();
-      const coords = getEventCoordinates(e, cutBtn);
-      triggerConfettiBurst(coords.x, coords.y, 130);
       showModal('surprise-modal', '🍰', 'Virtual Cake Cut! 🎉', 'First slice goes to Shruti! Have the happiest day ever! 🎂💖');
     });
   }
@@ -519,12 +569,10 @@ function toggleMicBlowingSensor(flames, statusBadge, btn) {
         playBlowSFX();
         flames.forEach(f => extinguish(f));
 
-        const cakeCard = document.querySelector('.cake-scrapbook-card');
-        const coords = getEventCoordinates(null, cakeCard);
-        triggerConfettiBurst(coords.x, coords.y, 140);
-        spawnFloatingHearts(coords.x, coords.y);
+        // MASSIVE SCREEN-WIDE PARTY POPPER BURST!
+        triggerMassivePopperExplosion();
 
-        // Speak "Happy Birthday Shruti!" out loud & play song!
+        // Speak "Happy Birthday Shruti!" out loud & start tune!
         speakHappyBirthdayShruti();
 
         if (!isPlayingTune) {
@@ -535,11 +583,11 @@ function toggleMicBlowingSensor(flames, statusBadge, btn) {
 
         if (statusBadge) {
           statusBadge.classList.add('active');
-          statusBadge.textContent = '💨 WISH GRANTED! Shruti blew out all candles! 🗣️ Happy Birthday Shruti!';
+          statusBadge.textContent = '🎉 MASSIVE POPPER BURST! 🗣️ Happy Birthday Shruti!';
         }
 
         setTimeout(() => {
-          showModal('surprise-modal', '🎂', 'Happy Birthday Shruti! 🎂🎉', 'Awesome! Shruti blew into the microphone and extinguished all the candles! Enjoy your birthday wish and song! 🌟✨');
+          showModal('surprise-modal', '🎉', 'HAPPY BIRTHDAY SHRUTI! 🎂🎉', 'WOOHOO! Shruti blew into the microphone and extinguished all the candles! Enjoy your celebration! 🌟✨');
         }, 300);
 
         return;
