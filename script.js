@@ -394,11 +394,18 @@ function initPopSurprises() {
 }
 
 
-/* Candle Blowing Engine */
+/* Candle Blowing & Microphone Sensor Engine */
+let micStream = null;
+let micAnalyser = null;
+let isMicListening = false;
+let micAnimationFrame = null;
+
 function initCandles() {
   const flames = document.querySelectorAll('.flame-element');
   const blowBtn = document.getElementById('blow-candles-btn');
   const cutBtn = document.getElementById('cut-cake-btn');
+  const micBtn = document.getElementById('mic-blow-btn');
+  const micStatus = document.getElementById('mic-status');
 
   flames.forEach(f => {
     f.addEventListener('click', (e) => {
@@ -406,6 +413,12 @@ function initCandles() {
       extinguish(f);
     });
   });
+
+  if (micBtn) {
+    micBtn.addEventListener('click', () => {
+      toggleMicBlowingSensor(flames, micStatus, micBtn);
+    });
+  }
 
   if (blowBtn) {
     blowBtn.addEventListener('click', (e) => {
@@ -424,6 +437,104 @@ function initCandles() {
       triggerConfettiBurst(coords.x, coords.y, 130);
       showModal('surprise-modal', '🍰', 'Virtual Cake Cut! 🎉', 'First slice goes to Shruti! Have the happiest day ever! 🎂💖');
     });
+  }
+}
+
+function toggleMicBlowingSensor(flames, statusBadge, btn) {
+  if (isMicListening) {
+    stopMicListening(statusBadge, btn);
+    return;
+  }
+
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    if (statusBadge) statusBadge.textContent = '❌ Mic Sensor unavailable in browser. Tap candles or button to blow!';
+    return;
+  }
+
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+    micStream = stream;
+    isMicListening = true;
+
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) audioCtx = new AudioContextClass();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    const source = audioCtx.createMediaStreamSource(stream);
+    micAnalyser = audioCtx.createAnalyser();
+    micAnalyser.fftSize = 256;
+    source.connect(micAnalyser);
+
+    if (statusBadge) {
+      statusBadge.classList.add('active');
+      statusBadge.textContent = '🎙️ Listening... Shruti, BLOW into your phone microphone now! 💨';
+    }
+    if (btn) btn.textContent = '🛑 Stop Mic Sensor';
+
+    const dataArray = new Uint8Array(micAnalyser.frequencyBinCount);
+
+    function checkBlow() {
+      if (!isMicListening) return;
+
+      micAnalyser.getByteFrequencyData(dataArray);
+
+      // Low-mid frequency wind noise average (50Hz - 600Hz)
+      let sum = 0;
+      const binCount = Math.min(25, dataArray.length);
+      for (let i = 0; i < binCount; i++) {
+        sum += dataArray[i];
+      }
+      const averageVolume = sum / binCount;
+
+      // Blowing threshold detection
+      if (averageVolume > 48) {
+        playBlowSFX();
+        flames.forEach(f => extinguish(f));
+
+        const cakeCard = document.querySelector('.cake-scrapbook-card');
+        const coords = getEventCoordinates(null, cakeCard);
+        triggerConfettiBurst(coords.x, coords.y, 140);
+
+        stopMicListening(statusBadge, btn);
+
+        if (statusBadge) {
+          statusBadge.textContent = '💨 WISH GRANTED! Shruti blew out all the candles with her mic! 🎂✨';
+        }
+
+        setTimeout(() => {
+          showModal('surprise-modal', '💨', 'Blow Sensor Success!', 'Awesome! Shruti blew into the microphone and extinguished all the birthday candles! Make a wish! 🌟✨');
+        }, 300);
+
+        return;
+      }
+
+      micAnimationFrame = requestAnimationFrame(checkBlow);
+    }
+
+    checkBlow();
+
+  }).catch(() => {
+    if (statusBadge) {
+      statusBadge.textContent = '⚠️ Mic permission required! Please allow mic access to blow candles with your breath.';
+    }
+  });
+}
+
+function stopMicListening(statusBadge, btn) {
+  isMicListening = false;
+  if (micAnimationFrame) cancelAnimationFrame(micAnimationFrame);
+  if (micStream) {
+    micStream.getTracks().forEach(track => track.stop());
+    micStream = null;
+  }
+  if (statusBadge) {
+    statusBadge.classList.remove('active');
+  }
+  if (btn) {
+    btn.textContent = '🎙️ Blow Mic Sensor';
   }
 }
 
