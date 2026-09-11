@@ -412,22 +412,15 @@ function initCandles() {
   const blowBtn = document.getElementById('blow-candles-btn');
   const cutBtn = document.getElementById('cut-cake-btn');
   const micBtn = document.getElementById('mic-blow-btn');
-  const singBtn = document.getElementById('sing-song-btn');
   const micStatus = document.getElementById('mic-status');
 
   flames.forEach(f => {
     f.addEventListener('click', (e) => {
       e.stopPropagation();
       extinguish(f);
+      if (!isPlayingTune) startTune();
     });
   });
-
-  if (singBtn) {
-    singBtn.addEventListener('click', (e) => {
-      const coords = getEventCoordinates(e, singBtn);
-      singShrutiBirthdaySong(singBtn, coords);
-    });
-  }
 
   if (micBtn) {
     micBtn.addEventListener('click', () => {
@@ -439,48 +432,22 @@ function initCandles() {
     blowBtn.addEventListener('click', (e) => {
       playBlowSFX();
       flames.forEach(f => extinguish(f));
+      if (!isPlayingTune) startTune();
       const coords = getEventCoordinates(e, blowBtn);
       triggerConfettiBurst(coords.x, coords.y, 100);
-      showModal('surprise-modal', '🕯️', 'Candles Blown Out!', 'Make a wish, Shruti! May every dream come true this year! 🌟✨');
+      showModal('surprise-modal', '🕯️', 'Candles Blown Out! 🎂🎉', 'Make a wish, Shruti! May every dream come true this year! 🎵 Enjoy your birthday song! 🌟✨');
     });
   }
 
   if (cutBtn) {
     cutBtn.addEventListener('click', (e) => {
       playChimeSFX();
+      if (!isPlayingTune) startTune();
       const coords = getEventCoordinates(e, cutBtn);
       triggerConfettiBurst(coords.x, coords.y, 130);
       showModal('surprise-modal', '🍰', 'Virtual Cake Cut! 🎉', 'First slice goes to Shruti! Have the happiest day ever! 🎂💖');
     });
   }
-}
-
-function singShrutiBirthdaySong(btnElement, coords) {
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-    const wishText = new SpeechSynthesisUtterance("Happy Birthday Dear Shruti! Wishing you a fabulous year filled with happiness, success, and warm hostel memories!");
-    wishText.rate = 0.92;
-    wishText.pitch = 1.15;
-    window.speechSynthesis.speak(wishText);
-  }
-
-  if (!audioCtx) {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (AudioContextClass) audioCtx = new AudioContextClass();
-  }
-  if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-  if (!isPlayingTune) {
-    startTune();
-  }
-
-  const posX = coords ? coords.x : window.innerWidth / 2;
-  const posY = coords ? coords.y : window.innerHeight / 2;
-  triggerConfettiBurst(posX, posY, 140);
-  spawnFloatingHearts(posX, posY);
-
-  showModal('surprise-modal', '🎶', "Shruti's Birthday Song! 🎂🎉", "🎵 Happy Birthday to you! Happy Birthday Dear Shruti! May all your dreams come true! — Love from Ritu & all your friends! 💖✨");
 }
 
 function toggleMicBlowingSensor(flames, statusBadge, btn) {
@@ -540,15 +507,22 @@ function toggleMicBlowingSensor(flames, statusBadge, btn) {
         const cakeCard = document.querySelector('.cake-scrapbook-card');
         const coords = getEventCoordinates(null, cakeCard);
         triggerConfettiBurst(coords.x, coords.y, 140);
+        spawnFloatingHearts(coords.x, coords.y);
+
+        // Start playing the Happy Birthday Shruti song!
+        if (!isPlayingTune) {
+          startTune();
+        }
 
         stopMicListening(statusBadge, btn);
 
         if (statusBadge) {
-          statusBadge.textContent = '💨 WISH GRANTED! Shruti blew out all the candles with her mic! 🎂✨';
+          statusBadge.classList.add('active');
+          statusBadge.textContent = '💨 WISH GRANTED! Shruti blew out all candles! 🎵 Playing Birthday Song!';
         }
 
         setTimeout(() => {
-          showModal('surprise-modal', '💨', 'Blow Sensor Success!', 'Awesome! Shruti blew into the microphone and extinguished all the birthday candles! Make a wish! 🌟✨');
+          showModal('surprise-modal', '🎂', 'Happy Birthday Shruti! 🎂🎉', 'Awesome! Shruti blew into the microphone and extinguished all the candles! Enjoy your birthday song! 🌟✨');
         }, 300);
 
         return;
