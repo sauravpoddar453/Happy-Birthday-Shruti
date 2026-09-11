@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Shruti! 🎂🎓 | Ritu & Shruti's Memory Scrapbook</title>
+  <meta name="description" content="A warm, personal college memory scrapbook for Shruti from her degree college friend Ritu featuring real photos at P.C.E. Purnea!">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Dancing+Script:wght@600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Particle Stars Canvas -->
+  <canvas id="particle-canvas"></canvas>
+
+  <div class="app-container">
+    
+    <!-- Top Navigation -->
+    <nav class="navbar">
+      <div class="nav-brand">
+        ✨ Shruti & Ritu's College Scrapbook 🎓
+      </div>
+    </nav>
+
+    <!-- Scrapbook Hero Section with Featured Photo Card -->
+    <header class="hero-scrapbook">
+      <div class="washi-tape-top-left"></div>
+      <div class="washi-tape-top-right"></div>
+      
+      <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; align-items: center;">
+        <div>
+          <span class="hero-tag">💖 P.C.E. Purnea Friends & Darjeeling Diaries 🏔️</span>
+          <h1 class="hero-main-title">Happy Birthday, <span id="hero-name-display">Shruti</span>! 🎂✨</h1>
+          <p class="hero-subtitle-text" id="hero-subtitle-display">
+            From taking admission together at P.C.E. Purnea & living in the hostel to crazy Darjeeling trip memories — different branches couldn't keep us apart! Here's to my most supportive friend! 💖
+          </p>
+
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <a href="#notebook-letter" class="btn-handcrafted" style="text-decoration: none;">💌 Read Ritu's Note</a>
+            <a href="#memory-lane" class="btn-handcrafted-sec" style="text-decoration: none; color: #0f172a; border-color: #cbd5e1;">📸 Our Real Photo Gallery</a>
+          </div>
+        </div>
+
+        <!-- Featured Polaroid Preview -->
+        <div style="text-align: center;">
+          <div class="polaroid-item" style="transform: rotate(3deg); display: inline-block; width: 100%; max-width: 290px;">
+            <div class="polaroid-tape"></div>
+            <div class="polaroid-img-box" style="height: 250px;">
+              <img src="assets/photo4.jpg" alt="Ritu & Shruti in Sarees at P.C.E. Purnea">
+            </div>
+            <div class="polaroid-text">Ritu & Shruti 🌸✨</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Personal Handwritten Notebook Letter Section -->
+    <section id="notebook-letter" class="notebook-letter-section">
+      <div class="letter-header">
+        💌 A Special Birthday Letter from Ritu to Shruti:
+      </div>
+      <div class="letter-body" id="letter-body-display">
+        Dear Shruti,<br><br>
+        Looking back at our journey — right from the day we took admission together at P.C.E. Purnea to living in the college hostel, surviving everyday chaos, and making endless late-night room memories over electric kettle chai! 🏢✨<br><br>
+        Even though we were in different branches, our bond was always the strongest. Thank you for being the most supportive friend anyone could ever ask for — whenever I needed help, advice, or an assignment boost, you were always right there standing by my side. 💖<br><br>
+        And how can I ever forget our Darjeeling trip? The chilly mountain mornings, tea gardens, endless laughter, and crazy moments made it the most memorable trip of our lives! 🏔️☕✨<br><br>
+        Thank you for being my rock and my true friend. May this birthday bring you as much happiness as you bring to everyone around you! Happy Birthday, Shruti! 🎂🎉
+      </div>
+      <div class="letter-signature" id="letter-sig-display">
+        With lots of love & tight hugs,<br>
+        — Your hostel friend, Ritu ✨
+      </div>
+    </section>
+
+    <!-- Interactive Pop-It Balloons & Mystery Gift Corner -->
+    <section id="pop-section" class="scrapbook-section">
+      <h2 class="section-hand-title">🎈 Click & Pop Shruti's Memory Balloons! 🎁</h2>
+      <p class="section-hand-desc">Tap on any balloon or gift box to reveal our Darjeeling trip memories & hostel secrets!</p>
+
+      <div class="pop-grid">
+        
+        <!-- Pop Item 1: Darjeeling Trip -->
+        <div class="pop-item" data-title="🏔️ Darjeeling Trip Memory!" data-message="UNFORGETTABLE TRIP: Chilly mountain mornings, scenic tea gardens, hot momos & non-stop laughter with Shruti in Darjeeling! Best trip ever! 🏔️☕✨" data-icon="🏔️">
+          <svg width="100" height="130" viewBox="0 0 100 130">
+            <ellipse cx="50" cy="50" rx="38" ry="46" fill="#ff758c"/>
+            <polygon points="50,96 45,106 55,106" fill="#ff758c"/>
+            <path d="M50 106 Q 45 118 52 128" stroke="#ff7eb3" stroke-width="2" fill="none"/>
+            <ellipse cx="35" cy="30" rx="7" ry="12" fill="rgba(255,255,255,0.4)" transform="rotate(-20 35 30)"/>
+          </svg>
+          <div class="pop-item-sticker">🏔️ Darjeeling!</div>
+        </div>
+
+        <!-- Pop Item 2: Hostel Masti -->
+        <div class="pop-item" data-title="🏢 Hostel Room Masti!" data-message="HOSTEL SECRETS: Late night room chats, kettle chai, sneaking midnight snacks, and gossiping till 3 AM! Hostel life was gold because of Shruti! 🏢🍜" data-icon="🏢">
+          <svg width="100" height="120" viewBox="0 0 100 120">
+            <rect x="15" y="45" width="70" height="55" rx="8" fill="#fbbf24"/>
+            <rect x="10" y="35" width="80" height="15" rx="4" fill="#f59e0b"/>
+            <rect x="42" y="35" width="16" height="65" fill="#ef4444"/>
+            <path d="M30 25 C 20 10, 45 10, 50 35 C 55 10, 80 10, 70 25 Z" fill="#ef4444"/>
+          </svg>
+          <div class="pop-item-sticker">🎁 Hostel Secret</div>
+        </div>
+
+        <!-- Pop Item 3: Admission Day -->
+        <div class="pop-item" data-title="🎓 Admission Day Partners!" data-message="Where it all started: Taking admission together at P.C.E. Purnea and instantly becoming lifelong friends! 📜✨" data-icon="🎓">
+          <svg width="100" height="130" viewBox="0 0 100 130">
+            <ellipse cx="50" cy="50" rx="38" ry="46" fill="#a855f7"/>
+            <polygon points="50,96 45,106 55,106" fill="#a855f7"/>
+            <path d="M50 106 Q 55 118 48 128" stroke="#a855f7" stroke-width="2" fill="none"/>
+            <ellipse cx="35" cy="30" rx="7" ry="12" fill="rgba(255,255,255,0.4)" transform="rotate(-20 35 30)"/>
+          </svg>
+          <div class="pop-item-sticker">🎈 Pop Me!</div>
+        </div>
+
+        <!-- Pop Item 4: Supportive Friend -->
+        <div class="pop-item" data-title="💖 Most Supportive Friend!" data-message="Different branches couldn't weaken our bond! Shruti has always been the most caring & supportive backbone! 🌟🤗" data-icon="💖">
+          <svg width="100" height="130" viewBox="0 0 100 130">
+            <ellipse cx="50" cy="50" rx="38" ry="46" fill="#38ef7d"/>
+            <polygon points="50,96 45,106 55,106" fill="#38ef7d"/>
+            <path d="M50 106 Q 45 118 52 128" stroke="#38ef7d" stroke-width="2" fill="none"/>
+            <ellipse cx="35" cy="30" rx="7" ry="12" fill="rgba(255,255,255,0.4)" transform="rotate(-20 35 30)"/>
+          </svg>
+          <div class="pop-item-sticker">🎈 Pop Me!</div>
+        </div>
+
+        <!-- Pop Item 5: Darjeeling Treat Coupon -->
+        <div class="pop-item" data-title="🥟 Darjeeling Momos & Tea Coupon!" data-message="COUPON REVEALED: 1x Unlimited Hot Darjeeling Momos & Kettle Chai treat redeemable with Ritu anytime! 🥟☕ (Valid forever!)" data-icon="🥟">
+          <svg width="100" height="120" viewBox="0 0 100 120">
+            <rect x="15" y="45" width="70" height="55" rx="8" fill="#f43f5e"/>
+            <rect x="10" y="35" width="80" height="15" rx="4" fill="#e11d48"/>
+            <rect x="42" y="35" width="16" height="65" fill="#fbbf24"/>
+            <path d="M30 25 C 20 10, 45 10, 50 35 C 55 10, 80 10, 70 25 Z" fill="#fbbf24"/>
+          </svg>
+          <div class="pop-item-sticker">🎁 Special Treat</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Interactive Birthday Cake & Candles -->
+    <section class="cake-scrapbook-card">
+      <div class="cake-visual-container">
+        <img src="assets/cake.jpg" alt="Birthday Cake for Shruti">
+        <div class="candles-layer" id="candles-overlay">
+          <div class="flame-element" data-candle="1"></div>
+          <div class="flame-element" data-candle="2"></div>
+          <div class="flame-element" data-candle="3"></div>
+          <div class="flame-element" data-candle="4"></div>
+          <div class="flame-element" data-candle="5"></div>
+        </div>
+      </div>
+
+      <div>
+        <h2 style="font-family: var(--font-handwriting); font-size: 2.4rem; color: var(--accent-gold); margin-bottom: 10px;">
+          Make a Wish, Shruti! 🕯️✨
+        </h2>
+        <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;">
+          Click the candles above or tap below to blow out candles with sound FX & celebratory confetti burst!
+        </p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <button id="blow-candles-btn" class="btn-handcrafted">🕯️ Blow Out Candles</button>
+          <button id="cut-cake-btn" class="btn-handcrafted-sec">🍰 Cut The Cake</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- REAL POLAROID MEMORY WALL (5 Real Photos!) -->
+    <section id="memory-lane" class="scrapbook-section">
+      <h2 class="section-hand-title">📸 Ritu & Shruti's Memory Gallery</h2>
+      <p class="section-hand-desc">Tap any photo frame below to zoom in on your favorite college & trip memories!</p>
+
+      <div class="polaroid-scrapbook-grid" id="polaroid-grid">
+        
+        <!-- Real Photo 1: Sarees at P.C.E. Purnea -->
+        <div class="polaroid-item" data-img="assets/photo4.jpg" data-caption="P.C.E. Purnea Saree Night — Elegance & Smiles! 🌸✨">
+          <div class="polaroid-tape"></div>
+          <div class="polaroid-img-box">
+            <img src="assets/photo4.jpg" alt="Saree Night at P.C.E. Purnea">
+          </div>
+          <div class="polaroid-text">P.C.E. Purnea Lawn Night 🌸</div>
+        </div>
+
+        <!-- Real Photo 2: Cozy Sweaters with Heart -->
+        <div class="polaroid-item" data-img="assets/photo1.jpg" data-caption="Cozy Winter Sweater Smiles & Forever Warmth 💖">
+          <div class="polaroid-tape"></div>
+          <div class="polaroid-img-box">
+            <img src="assets/photo1.jpg" alt="Cozy Sweaters">
+          </div>
+          <div class="polaroid-text">Cozy Sweater Smiles 💖</div>
+        </div>
+
+        <!-- Real Photo 3: Purnia Golden Hour Selfie -->
+        <div class="polaroid-item" data-img="assets/photo2.jpg" data-caption="Purnia Hostel Golden Hour Selfie ☀️📱">
+          <div class="polaroid-tape"></div>
+          <div class="polaroid-img-box">
+            <img src="assets/photo2.jpg" alt="Purnia Hostel Selfie">
+          </div>
+          <div class="polaroid-text">Purnia Golden Hour ☀️</div>
+        </div>
+
+        <!-- Real Photo 4: Shopping Spree Mirror Selfie -->
+        <div class="polaroid-item" data-img="assets/photo3.jpg" data-caption="Shopping Spree & Mirror Selfie Masti! 🛍️📸">
+          <div class="polaroid-tape"></div>
+          <div class="polaroid-img-box">
+            <img src="assets/photo3.jpg" alt="Shopping Spree Mirror Selfie">
+          </div>
+          <div class="polaroid-text">Shopping Spree Masti 🛍️</div>
+        </div>
+
+        <!-- Real Photo 5: Black & White Heart Crown Cuties -->
+        <div class="polaroid-item" data-img="assets/photo5.jpg" data-caption="Heart Crown Friends — Pure Joy & Laughter! 👑🖤">
+          <div class="polaroid-tape"></div>
+          <div class="polaroid-img-box">
+            <img src="assets/photo5.jpg" alt="Black and White Heart Crowns">
+          </div>
+          <div class="polaroid-text">Heart Crown Friends 👑🖤</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- College & Hostel Memory Vault -->
+    <section class="scrapbook-section">
+      <h2 class="section-hand-title">🏢 Ritu & Shruti's Hostel Chronicles</h2>
+      
+      <div class="memory-vault-grid">
+        <div class="memory-vault-card">
+          <div class="memory-title">🏢 Hostel Room Masti</div>
+          <div class="memory-desc">Late night room visits, electric kettle chai, sharing meals, endless laughter, and solving life problems!</div>
+        </div>
+
+        <div class="memory-vault-card">
+          <div class="memory-title">🏔️ Darjeeling Diaries</div>
+          <div class="memory-desc">Chilly morning teas, tea garden photoshoots, market shopping & creating memories for a lifetime!</div>
+        </div>
+
+        <div class="memory-vault-card">
+          <div class="memory-title">💖 Unconditional Support</div>
+          <div class="memory-desc">Different academic branches, but Shruti was always Ritu's #1 supporter in every situation!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Read-Only Sticky Notes Wish Wall -->
+    <section class="scrapbook-section">
+      <h2 class="section-hand-title">💌 Birthday Notes Wall</h2>
+
+      <div class="sticky-wall-grid" id="sticky-wall-grid">
+        <div class="sticky-note-item note-yellow">
+          "Happy Birthday Shruti! From hostel room late night talks to our Darjeeling trip, you've been the best friend ever!"
+          <div class="note-signature">— Ritu 💖</div>
+        </div>
+
+        <div class="sticky-note-item note-pink">
+          "Wishing you a year filled with endless laughter, dream achievements, and pure happiness! Happy Birthday Shruti!"
+          <div class="note-signature">— Ritu 🌸</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer with Developer Credit -->
+    <footer style="text-align: center; padding: 30px 10px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px; line-height: 1.8;">
+      <div>Wishes from <strong id="footer-author-display" style="color: var(--accent-pink);">Ritu</strong> to <strong style="color: var(--accent-gold);">Shruti</strong> 🎂 | Hostel & Darjeeling Friends Forever!</div>
+      <div style="font-size: 0.82rem; color: #64748b; margin-top: 6px;">
+        💻 Designed & Developed with ❤️ by <strong style="color: #fbbf24;">Saurav Poddar</strong>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Pop Surprise Modal -->
+  <div class="modal-backdrop" id="surprise-modal">
+    <div class="modal-box">
+      <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+      <div style="font-size: 3.2rem; margin-bottom: 10px;" id="modal-icon">🎁</div>
+      <h3 style="font-family: var(--font-handwriting); font-size: 2.2rem; color: #b91c1c; margin-bottom: 10px;" id="modal-title">Memory Unlocked!</h3>
+      <div style="font-size: 1.1rem; line-height: 1.6; color: #334155; margin-bottom: 20px;" id="modal-body">Message content</div>
+      <button class="btn-handcrafted" id="modal-ok-btn">Awesome! 🎉</button>
+    </div>
+  </div>
+
+  <!-- Photo Lightbox Modal -->
+  <div class="modal-backdrop" id="photo-modal">
+    <div class="modal-box" style="max-width: 550px;">
+      <button class="modal-close-btn" id="photo-modal-close">&times;</button>
+      <img src="" id="photo-modal-img" style="width: 100%; border-radius: 12px; border: 3px solid #cbd5e1; margin-bottom: 12px;">
+      <h3 style="font-family: var(--font-handwriting); font-size: 2rem; color: #b91c1c;" id="photo-modal-caption">Caption</h3>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
